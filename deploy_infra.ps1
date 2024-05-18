@@ -37,8 +37,8 @@ param(
     [string]$aca_volumes_name=$envParameters.aca_volumes_name,
     [string]$aca_volume_mountPath=$envParameters.aca_volume_mountPath ,
     [string]$aca_targetPort=$envParameters.aca_targetPort,
-    [string]$aca_maxReplicas=$envParameters.aca_maxReplicas,
-    [string]$aca_minReplicas=$envParameters.minReplicas
+    [int]$aca_maxReplicas=$envParameters.aca_maxReplicas,
+    [int]$aca_minReplicas=$envParameters.aca_maxReplicas
     )
     
 # set default subscription
@@ -92,25 +92,26 @@ Write-Host "Location: $location"
 Write-Host "Container Registry Name: $containerRegistryName"
 Write-Host "Container Registry Server: $registryserver"
 Write-Host "Container Registry Username: $acrUsername"
+write-host "Name: $name"
 
 # deploy the template
 az deployment group create `
   -g $resourceGroupName `
   --template-file $templateFile `
   --parameters name=$name `
-    containerImage=$containerImage `
-    targetPort=$aca_targetPort `
-    aca_volume_mountPath=$aca_volume_mountPath `
-    aca_volumes_name=$aca_volumes_name `
-    maxReplicas=$aca_maxReplicas `
-    minReplicas=$aca_minReplicas `
-    acenv_fileshare_resource_group=$acenv_fileshare_resource_group `
-    acenv_storage_account_name=$acenv_storage_account_name `
-    acenv_fileshareName=$acenv_fileshareName `
-    acenv_volumes_storagename=$acenv_volumes_storagename `
-    location=$location `
-    containerRegistryName=$containerRegistryName `
-    registryserver=$registryserver `
-    acrUsername=$acrUsername `
-    acrPassword=$acrPassword `
+  containerImage=$containerImage `
+  targetPort=$aca_targetPort `
+  aca_volume_mountPath=$aca_volume_mountPath `
+  aca_volumes_name=$aca_volumes_name `
+  minReplicas=$aca_minReplicas `
+  maxReplicas=$aca_maxReplicas `
+  acenv_fileshare_resource_group=$acenv_fileshare_resource_group `
+  acenv_storage_account_name=$acenv_storage_account_name `
+  acenv_fileshareName=$acenv_fileshareName `
+  acenv_volumes_storagename=$acenv_volumes_storagename `
+  location=$location `
+  containerRegistryName=$containerRegistryName `
+  registryserver=$registryserver `
+  acrUsername=$acrUsername `
+  acrPassword=$acrPassword `
   --query properties.outputs.fqdn.value
