@@ -1,11 +1,11 @@
-version: '3.4'
+version: '3.8'
 
 services:
 
   Petstore:
     env_file:
       - .env
-    image: ${registryserver}/${repository}:${imagetag}
+    image: ${registryServer}/${repository}:${imageTag}
     build:
       context: .
       args:

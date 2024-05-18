@@ -6,9 +6,9 @@ param(
     [string]$name=$envParameters.name,
     [string]$location=$envParameters.location,
     # get createResourceGroup from parameters
-    [string]$createResourceGroup=$envParameters.createResourceGroup,
+    [string]$createResourceGroup=$envParameters.CreateResourceGroup,
     
-    [string]$subscriptionId=$envParameters.subscriptionId,
+    [string]$subscriptionId=$envParameters.AzureSubscriptionId,
 
     # get resource group name from parameters
     # if createResourceGroup is false, use the resource group name from parameters else
@@ -16,12 +16,14 @@ param(
     [string]$resourceGroupName=$(if ($createResourceGroup -eq "false") {
       $envParameters.resourceGroup} else {
         "$name-rg"}), 
-    [string]$containerRegistryName=$envParameters.containerRegistryName,
 
-    # Image configuration
-    [string]$registryserver=$envParameters.registryserver,
+    # Container registry
+    [string]$containerRegistryName=$envParameters.containerRegistryName,
+    [string]$registryserver=$envParameters.registryServer,
+
+      # Image configuration
     [string]$repository=$envParameters.repository,
-    [string]$imagetag=$envParameters.deploymentImageTag,
+    [string]$imagetag=$envParameters.imageTag,
     # Container image in the format of <container registry>/<image name>:<image tag>
     [string]$containerImage="$($registryserver)/$($repository):$($imagetag)",
         
@@ -34,9 +36,9 @@ param(
     #Azure Container Apps Related values
     [string]$aca_volumes_name=$envParameters.aca_volumes_name,
     [string]$aca_volume_mountPath=$envParameters.aca_volume_mountPath ,
-    [string]$aca_targetPort=$envParameters.targetPort,
-    [string]$aca_maxReplicas=$envParameters.maxReplicas,
-    [string]$aca_minReplicas=$envParameters.minReplicas
+    [string]$aca_targetPort=$envParameters.aca_targetPort,
+    [int]$aca_maxReplicas=$envParameters.aca_maxReplicas,
+    [int]$aca_minReplicas=$envParameters.aca_maxReplicas
     )
     
 # set default subscription
@@ -90,25 +92,26 @@ Write-Host "Location: $location"
 Write-Host "Container Registry Name: $containerRegistryName"
 Write-Host "Container Registry Server: $registryserver"
 Write-Host "Container Registry Username: $acrUsername"
+write-host "Name: $name"
 
 # deploy the template
 az deployment group create `
   -g $resourceGroupName `
   --template-file $templateFile `
   --parameters name=$name `
-    containerImage=$containerImage `
-    targetPort=$aca_targetPort `
-    aca_volume_mountPath=$aca_volume_mountPath `
-    aca_volumes_name=$aca_volumes_name `
-    maxReplicas=$aca_maxReplicas `
-    minReplicas=$aca_minReplicas `
-    acenv_fileshare_resource_group=$acenv_fileshare_resource_group `
-    acenv_storage_account_name=$acenv_storage_account_name `
-    acenv_fileshareName=$acenv_fileshareName `
-    acenv_volumes_storagename=$acenv_volumes_storagename `
-    location=$location `
-    containerRegistryName=$containerRegistryName `
-    registryserver=$registryserver `
-    acrUsername=$acrUsername `
-    acrPassword=$acrPassword `
+  containerImage=$containerImage `
+  targetPort=$aca_targetPort `
+  aca_volume_mountPath=$aca_volume_mountPath `
+  aca_volumes_name=$aca_volumes_name `
+  minReplicas=$aca_minReplicas `
+  maxReplicas=$aca_maxReplicas `
+  acenv_fileshare_resource_group=$acenv_fileshare_resource_group `
+  acenv_storage_account_name=$acenv_storage_account_name `
+  acenv_fileshareName=$acenv_fileshareName `
+  acenv_volumes_storagename=$acenv_volumes_storagename `
+  location=$location `
+  containerRegistryName=$containerRegistryName `
+  registryserver=$registryserver `
+  acrUsername=$acrUsername `
+  acrPassword=$acrPassword `
   --query properties.outputs.fqdn.value
