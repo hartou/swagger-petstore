@@ -6,9 +6,9 @@ param(
     [string]$name=$envParameters.name,
     [string]$location=$envParameters.location,
     # get createResourceGroup from parameters
-    [string]$createResourceGroup=$envParameters.createResourceGroup,
+    [string]$createResourceGroup=$envParameters.CreateResourceGroup,
     
-    [string]$subscriptionId=$envParameters.subscriptionId,
+    [string]$subscriptionId=$envParameters.AzureSubscriptionId,
 
     # get resource group name from parameters
     # if createResourceGroup is false, use the resource group name from parameters else
@@ -16,12 +16,14 @@ param(
     [string]$resourceGroupName=$(if ($createResourceGroup -eq "false") {
       $envParameters.resourceGroup} else {
         "$name-rg"}), 
-    [string]$containerRegistryName=$envParameters.containerRegistryName,
 
-    # Image configuration
-    [string]$registryserver=$envParameters.registryserver,
+    # Container registry
+    [string]$containerRegistryName=$envParameters.containerRegistryName,
+    [string]$registryserver=$envParameters.registryServer,
+
+      # Image configuration
     [string]$repository=$envParameters.repository,
-    [string]$imagetag=$envParameters.deploymentImageTag,
+    [string]$imagetag=$envParameters.imageTag,
     # Container image in the format of <container registry>/<image name>:<image tag>
     [string]$containerImage="$($registryserver)/$($repository):$($imagetag)",
         
@@ -34,8 +36,8 @@ param(
     #Azure Container Apps Related values
     [string]$aca_volumes_name=$envParameters.aca_volumes_name,
     [string]$aca_volume_mountPath=$envParameters.aca_volume_mountPath ,
-    [string]$aca_targetPort=$envParameters.targetPort,
-    [string]$aca_maxReplicas=$envParameters.maxReplicas,
+    [string]$aca_targetPort=$envParameters.aca_targetPort,
+    [string]$aca_maxReplicas=$envParameters.aca_maxReplicas,
     [string]$aca_minReplicas=$envParameters.minReplicas
     )
     
